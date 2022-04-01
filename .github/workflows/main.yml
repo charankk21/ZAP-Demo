@@ -23,14 +23,14 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - uses: actions/checkout@v2
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Invoke WebInspect
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          export RUNNER_ALLOW_RUNASROOT="1"
+          export AGENT_ALLOW_RUNASROOT="1"
+          sudo echo "3.86.57.49 fortify.cyberxdemo.com" | sudo tee -a /etc/hosts
+          echo 'Starting WebInspect Scan'
+          curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' --data '{"settingsName": "${{ secrets.WI_SETTINGS_NAME }}"}' \
+              --url '${{ secrets.WI_API_URL }}'
